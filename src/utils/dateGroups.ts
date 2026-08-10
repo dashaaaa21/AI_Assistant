@@ -27,3 +27,15 @@ export function groupChatsByDate(chats: Chat[], now = Date.now()): ChatGroup[] {
 
   return groups.filter((group) => group.chats.length > 0);
 }
+
+/** A day label for a message: "Today", "Yesterday" or a date like "Aug 10, 2026". */
+export function formatDay(timestamp: number, now = Date.now()): string {
+  const startOfToday = new Date(now).setHours(0, 0, 0, 0);
+  if (timestamp >= startOfToday) return 'Today';
+  if (timestamp >= startOfToday - DAY) return 'Yesterday';
+  return new Date(timestamp).toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+export function isSameDay(a: number, b: number): boolean {
+  return new Date(a).toDateString() === new Date(b).toDateString();
+}

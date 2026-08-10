@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import type { Chat, Message, Sender } from './types';
 import Sidebar from './components/Sidebar';
 import WelcomeScreen from './components/WelcomeScreen';
@@ -9,6 +9,7 @@ import { createId } from './utils/id';
 import { loadChats, saveChats } from './utils/storage';
 import { getFakeReply } from './utils/fakeAI';
 import { downloadChat } from './utils/exportChat';
+import { formatDay, isSameDay } from './utils/dateGroups';
 import { applyTheme, loadTheme, saveTheme } from './utils/theme';
 import type { Theme } from './utils/theme';
 import './App.css';
@@ -203,12 +204,13 @@ export default function App() {
               {activeChat.messages.map((message, index) => {
                 const isLastReply =
                   index === activeChat.messages.length - 1 && message.sender === 'assistant' && !isReplying;
+                const previous = activeChat.messages[index - 1];
+                const startsNewDay = !previous || !isSameDay(previous.createdAt, message.createdAt);
                 return (
-                  <MessageBubble
-                    key={message.id}
-                    message={message}
-                    onRegenerate={isLastReply ? handleRegenerate : undefined}
-                  />
+                  <Fragment key={message.id}>
+                    {startsNewDay && <div className="day-separator">{formatDay(message.createdAt)}</div>}
+                    <MessageBubble message={message} onRegenerate={isLastReply ? handleRegenerate : undefined} />
+                  </Fragment>
                 );
               })}
               {replyingChatId === activeChat.id && <TypingIndicator />}
