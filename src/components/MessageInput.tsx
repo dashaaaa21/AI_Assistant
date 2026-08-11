@@ -69,7 +69,7 @@ export default function MessageInput({ onSend, onStop, disabled }: MessageInputP
           </button>
         )}
       </div>
-      <p className="input-hint">Replies are simulated · Enter to send, Shift + Enter for a new line</p>
+      <p className="input-hint">Replies are simulated · Enter to send, Shift + Enter for a new line, Ctrl/Cmd + K for a new chat</p>
     </div>
   );
 }

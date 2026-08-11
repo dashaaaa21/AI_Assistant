@@ -55,6 +55,20 @@ export default function App() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [activeChat?.messages.length, replyingChatId, activeChatId]);
 
+  // Keyboard shortcuts: Ctrl/Cmd + K – new chat, Esc – stop the reply.
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        handleNewChat();
+      } else if (event.key === 'Escape' && isReplying) {
+        handleStop();
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  });
+
   /** Adds a message to a chat and moves that chat to the top of the list. */
   function addMessage(chatId: string, message: Message) {
     setChats((prev) => {
@@ -193,7 +207,7 @@ export default function App() {
           >
             {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
           </button>
-          <button className="icon-button" onClick={handleNewChat} aria-label="New chat">
+          <button className="icon-button" onClick={handleNewChat} aria-label="New chat" title="New chat (Ctrl/Cmd + K)">
             <PlusIcon />
           </button>
         </header>
