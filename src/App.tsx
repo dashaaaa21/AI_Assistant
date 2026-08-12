@@ -4,7 +4,7 @@ import Sidebar from './components/Sidebar';
 import WelcomeScreen from './components/WelcomeScreen';
 import MessageBubble, { TypingIndicator } from './components/MessageBubble';
 import MessageInput from './components/MessageInput';
-import { DownloadIcon, MenuIcon, MoonIcon, PlusIcon, SunIcon } from './components/Icons';
+import { ArrowDownIcon, DownloadIcon, MenuIcon, MoonIcon, PlusIcon, SunIcon } from './components/Icons';
 import { createId } from './utils/id';
 import { loadChats, saveChats } from './utils/storage';
 import { getFakeReply } from './utils/fakeAI';
@@ -34,6 +34,8 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [theme, setTheme] = useState<Theme>(loadTheme);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
+  const [showScrollDown, setShowScrollDown] = useState(false);
   const requestIdRef = useRef(0);
 
   const activeChat = chats.find((chat) => chat.id === activeChatId) ?? null;
@@ -68,6 +70,17 @@ export default function App() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   });
+
+  /** Shows the "scroll to bottom" button when you scroll up through the history. */
+  function handleMessagesScroll() {
+    const el = messagesRef.current;
+    if (!el) return;
+    setShowScrollDown(el.scrollHeight - el.scrollTop - el.clientHeight > 200);
+  }
+
+  function scrollToBottom() {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }
 
   /** Adds a message to a chat and moves that chat to the top of the list. */
   function addMessage(chatId: string, message: Message) {
@@ -212,26 +225,33 @@ export default function App() {
           </button>
         </header>
 
-        <div className="chat-messages">
-          {activeChat && activeChat.messages.length > 0 ? (
-            <div className="message-list">
-              {activeChat.messages.map((message, index) => {
-                const isLastReply =
-                  index === activeChat.messages.length - 1 && message.sender === 'assistant' && !isReplying;
-                const previous = activeChat.messages[index - 1];
-                const startsNewDay = !previous || !isSameDay(previous.createdAt, message.createdAt);
-                return (
-                  <Fragment key={message.id}>
-                    {startsNewDay && <div className="day-separator">{formatDay(message.createdAt)}</div>}
-                    <MessageBubble message={message} onRegenerate={isLastReply ? handleRegenerate : undefined} />
-                  </Fragment>
-                );
-              })}
-              {replyingChatId === activeChat.id && <TypingIndicator />}
-              <div ref={messagesEndRef} />
-            </div>
-          ) : (
-            <WelcomeScreen onPromptClick={handleSend} />
+        <div className="chat-body">
+          <div className="chat-messages" ref={messagesRef} onScroll={handleMessagesScroll}>
+            {activeChat && activeChat.messages.length > 0 ? (
+              <div className="message-list">
+                {activeChat.messages.map((message, index) => {
+                  const isLastReply =
+                    index === activeChat.messages.length - 1 && message.sender === 'assistant' && !isReplying;
+                  const previous = activeChat.messages[index - 1];
+                  const startsNewDay = !previous || !isSameDay(previous.createdAt, message.createdAt);
+                  return (
+                    <Fragment key={message.id}>
+                      {startsNewDay && <div className="day-separator">{formatDay(message.createdAt)}</div>}
+                      <MessageBubble message={message} onRegenerate={isLastReply ? handleRegenerate : undefined} />
+                    </Fragment>
+                  );
+                })}
+                {replyingChatId === activeChat.id && <TypingIndicator />}
+                <div ref={messagesEndRef} />
+              </div>
+            ) : (
+              <WelcomeScreen onPromptClick={handleSend} />
+            )}
+          </div>
+          {showScrollDown && activeChat && (
+            <button className="scroll-down-button" onClick={scrollToBottom} aria-label="Scroll to bottom">
+              <ArrowDownIcon />
+            </button>
           )}
         </div>
 

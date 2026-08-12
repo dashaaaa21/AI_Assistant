@@ -39,9 +39,41 @@
   display: none;
 }
 
+.chat-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
 .chat-messages {
   flex: 1;
   overflow-y: auto;
+}
+
+/* Round button that jumps back to the newest message. */
+.scroll-down-button {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--text-muted);
+  box-shadow: var(--shadow);
+  transform: translateX(-50%);
+  animation: message-in 0.2s ease;
+}
+
+.scroll-down-button:hover {
+  color: var(--text);
+  background: var(--bg-subtle);
 }
 
 .message-list {
