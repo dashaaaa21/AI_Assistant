@@ -4,10 +4,12 @@ import Sidebar from './components/Sidebar';
 import WelcomeScreen from './components/WelcomeScreen';
 import MessageBubble, { TypingIndicator } from './components/MessageBubble';
 import MessageInput from './components/MessageInput';
-import { MenuIcon, PlusIcon } from './components/Icons';
+import { MenuIcon, MoonIcon, PlusIcon, SunIcon } from './components/Icons';
 import { createId } from './utils/id';
 import { loadChats, saveChats } from './utils/storage';
 import { getFakeReply } from './utils/fakeAI';
+import { applyTheme, loadTheme, saveTheme } from './utils/theme';
+import type { Theme } from './utils/theme';
 import './App.css';
 
 const TITLE_LENGTH = 40;
@@ -28,6 +30,7 @@ export default function App() {
   // The chat that is waiting for an assistant reply (null when none).
   const [replyingChatId, setReplyingChatId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [theme, setTheme] = useState<Theme>(loadTheme);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const activeChat = chats.find((chat) => chat.id === activeChatId) ?? null;
@@ -37,6 +40,12 @@ export default function App() {
   useEffect(() => {
     saveChats(chats);
   }, [chats]);
+
+  // Apply the theme to the page and remember it.
+  useEffect(() => {
+    applyTheme(theme);
+    saveTheme(theme);
+  }, [theme]);
 
   // Scroll to the newest message.
   useEffect(() => {
@@ -122,6 +131,14 @@ export default function App() {
             <MenuIcon />
           </button>
           <h2 className="chat-title">{activeChat?.title ?? 'New chat'}</h2>
+          <button
+            className="icon-button"
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+            title={theme === 'dark' ? 'Light theme' : 'Dark theme'}
+          >
+            {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+          </button>
           <button className="icon-button" onClick={handleNewChat} aria-label="New chat">
             <PlusIcon />
           </button>
