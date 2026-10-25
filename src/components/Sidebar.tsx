@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import type { Chat } from '../types';
-import { ChatIcon, CloseIcon, PlusIcon, SparkIcon, TrashIcon } from './Icons';
+import { ChatIcon, CloseIcon, PlusIcon, SearchIcon, SparkIcon, TrashIcon } from './Icons';
 import './Sidebar.css';
 
 // "Props" are the inputs a component receives from its parent (App).
@@ -22,6 +23,18 @@ export default function Sidebar({
   onDeleteChat,
   onClose,
 }: SidebarProps) {
+  const [query, setQuery] = useState('');
+
+  // Show chats whose title or messages contain the search text.
+  const search = query.trim().toLowerCase();
+  const visibleChats = search
+    ? chats.filter(
+        (chat) =>
+          chat.title.toLowerCase().includes(search) ||
+          chat.messages.some((m) => m.text.toLowerCase().includes(search)),
+      )
+    : chats;
+
   return (
     <>
       {/* Dark background behind the sidebar on mobile. Tap it to close. */}
@@ -45,14 +58,29 @@ export default function Sidebar({
           New chat
         </button>
 
+        {chats.length > 0 && (
+          <label className="chat-search">
+            <SearchIcon size={15} />
+            <input
+              type="search"
+              value={query}
+              placeholder="Search chats"
+              aria-label="Search chats"
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </label>
+        )}
+
         <nav className="chat-list" aria-label="Chat history">
           {chats.length === 0 ? (
             <p className="chat-list-empty">Your conversations will appear here.</p>
+          ) : visibleChats.length === 0 ? (
+            <p className="chat-list-empty">No chats found.</p>
           ) : (
             <>
-              <p className="chat-list-label">Recent</p>
+              <p className="chat-list-label">{search ? 'Results' : 'Recent'}</p>
               <ul>
-                {chats.map((chat) => (
+                {visibleChats.map((chat) => (
                   <li key={chat.id}>
                     <div className={`chat-item ${chat.id === activeChatId ? 'active' : ''}`}>
                       <button className="chat-item-select" onClick={() => onSelectChat(chat.id)}>

@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react';
 import type { Message } from '../types';
-import { SparkIcon } from './Icons';
+import { CheckIcon, CopyIcon, SparkIcon } from './Icons';
 import './MessageBubble.css';
 
 interface MessageBubbleProps {
@@ -24,6 +25,33 @@ function formatTime(timestamp: number): string {
   return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
+/** Copies the message text and shows a check mark for a moment. */
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!copied) return;
+    const timer = setTimeout(() => setCopied(false), 1500);
+    return () => clearTimeout(timer);
+  }, [copied]);
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+    } catch {
+      // Clipboard access can be blocked – nothing else to do.
+    }
+  }
+
+  return (
+    <button className="message-copy" onClick={copy} aria-label={copied ? 'Copied' : 'Copy message'}>
+      {copied ? <CheckIcon size={14} /> : <CopyIcon size={14} />}
+      <span>{copied ? 'Copied' : 'Copy'}</span>
+    </button>
+  );
+}
+
 export default function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.sender === 'user';
 
@@ -36,7 +64,10 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
       )}
       <div className="message-content">
         <div className="message-bubble">{formatText(message.text)}</div>
-        <span className="message-time">{formatTime(message.createdAt)}</span>
+        <div className="message-meta">
+          <span className="message-time">{formatTime(message.createdAt)}</span>
+          {!isUser && <CopyButton text={message.text} />}
+        </div>
       </div>
     </div>
   );

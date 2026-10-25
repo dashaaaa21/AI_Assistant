@@ -77,3 +77,23 @@ export const MoonIcon = (p: IconProps) => (
     <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
   </Svg>
 );
+
+export const CopyIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <rect x="9" y="9" width="11" height="11" rx="2" />
+    <path d="M5 15V6a2 2 0 0 1 2-2h8" />
+  </Svg>
+);
+
+export const CheckIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M5 12.5l4.5 4.5L19 7.5" />
+  </Svg>
+);
+
+export const SearchIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <circle cx="11" cy="11" r="7" />
+    <path d="M20 20l-3.5-3.5" />
+  </Svg>
+);

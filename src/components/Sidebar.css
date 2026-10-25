@@ -64,6 +64,39 @@
   background: var(--accent-soft);
 }
 
+.chat-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text-faint);
+  transition: border-color 0.15s;
+}
+
+.chat-search:focus-within {
+  border-color: var(--accent);
+}
+
+.chat-search input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.chat-search input::placeholder {
+  color: var(--text-faint);
+}
+
 .chat-list {
   flex: 1;
   overflow-y: auto;

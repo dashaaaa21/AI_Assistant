@@ -53,10 +53,47 @@
   font-weight: 600;
 }
 
-.message-time {
+.message-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-top: 4px;
+}
+
+.message-time {
   font-size: 11px;
   color: var(--text-faint);
+}
+
+.message-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 11px;
+  color: var(--text-faint);
+  opacity: 0; /* shown when you hover the message */
+  transition: opacity 0.15s, color 0.15s, background 0.15s;
+}
+
+.message:hover .message-copy,
+.message-copy:focus-visible {
+  opacity: 1;
+}
+
+.message-copy:hover {
+  color: var(--text);
+  background: var(--bg-subtle);
+}
+
+/* No hover on touch screens, so always show the copy button. */
+@media (hover: none) {
+  .message-copy {
+    opacity: 1;
+  }
 }
 
 /* Typing indicator: three bouncing dots. */
