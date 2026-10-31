@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import type { Message } from '../types';
-import { CheckIcon, CopyIcon, SparkIcon } from './Icons';
+import { CheckIcon, CopyIcon, RefreshIcon, SparkIcon } from './Icons';
 import './MessageBubble.css';
 
 interface MessageBubbleProps {
   message: Message;
+  onRegenerate?: () => void; // only passed for the latest reply
 }
 
 /**
@@ -45,14 +46,14 @@ function CopyButton({ text }: { text: string }) {
   }
 
   return (
-    <button className="message-copy" onClick={copy} aria-label={copied ? 'Copied' : 'Copy message'}>
+    <button className="message-action" onClick={copy} aria-label={copied ? 'Copied' : 'Copy message'}>
       {copied ? <CheckIcon size={14} /> : <CopyIcon size={14} />}
       <span>{copied ? 'Copied' : 'Copy'}</span>
     </button>
   );
 }
 
-export default function MessageBubble({ message }: MessageBubbleProps) {
+export default function MessageBubble({ message, onRegenerate }: MessageBubbleProps) {
   const isUser = message.sender === 'user';
 
   return (
@@ -67,6 +68,12 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
         <div className="message-meta">
           <span className="message-time">{formatTime(message.createdAt)}</span>
           {!isUser && <CopyButton text={message.text} />}
+          {onRegenerate && (
+            <button className="message-action" onClick={onRegenerate} aria-label="Regenerate reply">
+              <RefreshIcon size={14} />
+              <span>Regenerate</span>
+            </button>
+          )}
         </div>
       </div>
     </div>

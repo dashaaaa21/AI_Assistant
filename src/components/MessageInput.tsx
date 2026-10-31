@@ -1,16 +1,17 @@
 import { useRef, useState } from 'react';
 import type { KeyboardEvent } from 'react';
-import { SendIcon } from './Icons';
+import { SendIcon, StopIcon } from './Icons';
 import './MessageInput.css';
 
 interface MessageInputProps {
   onSend: (text: string) => void;
+  onStop: () => void;
   disabled: boolean; // true while the assistant is replying
 }
 
 const MAX_HEIGHT = 200; // px – the box stops growing after this
 
-export default function MessageInput({ onSend, disabled }: MessageInputProps) {
+export default function MessageInput({ onSend, onStop, disabled }: MessageInputProps) {
   // "State" is data a component remembers. Changing it re-draws the component.
   const [text, setText] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -58,9 +59,15 @@ export default function MessageInput({ onSend, disabled }: MessageInputProps) {
           }}
           onKeyDown={handleKeyDown}
         />
-        <button className="send-button" onClick={send} disabled={!canSend} aria-label="Send message">
-          <SendIcon size={18} />
-        </button>
+        {disabled ? (
+          <button className="send-button" onClick={onStop} aria-label="Stop reply">
+            <StopIcon size={16} />
+          </button>
+        ) : (
+          <button className="send-button" onClick={send} disabled={!canSend} aria-label="Send message">
+            <SendIcon size={18} />
+          </button>
+        )}
       </div>
       <p className="input-hint">Replies are simulated · Enter to send, Shift + Enter for a new line</p>
     </div>

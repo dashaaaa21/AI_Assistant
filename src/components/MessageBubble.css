@@ -65,7 +65,7 @@
   color: var(--text-faint);
 }
 
-.message-copy {
+.message-action {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -79,19 +79,19 @@
   transition: opacity 0.15s, color 0.15s, background 0.15s;
 }
 
-.message:hover .message-copy,
-.message-copy:focus-visible {
+.message:hover .message-action,
+.message-action:focus-visible {
   opacity: 1;
 }
 
-.message-copy:hover {
+.message-action:hover {
   color: var(--text);
   background: var(--bg-subtle);
 }
 
 /* No hover on touch screens, so always show the copy button. */
 @media (hover: none) {
-  .message-copy {
+  .message-action {
     opacity: 1;
   }
 }

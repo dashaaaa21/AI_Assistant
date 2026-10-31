@@ -32,6 +32,7 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [theme, setTheme] = useState<Theme>(loadTheme);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const requestIdRef = useRef(0);
 
   const activeChat = chats.find((chat) => chat.id === activeChatId) ?? null;
   const isReplying = replyingChatId !== null;
@@ -86,16 +87,45 @@ export default function App() {
 
     const id = chatId!;
     addMessage(id, createMessage('user', text));
-    setReplyingChatId(id);
+    await requestReply(id, text);
+  }
 
+  /** Asks the assistant to answer `text` and adds the reply to the chat. */
+  async function requestReply(chatId: string, text: string) {
+    // Each request gets a number; if it changes (Stop was pressed), the reply is ignored.
+    const requestId = ++requestIdRef.current;
+    setReplyingChatId(chatId);
+
+    let reply: string;
     try {
-      const reply = await getFakeReply(text);
-      addMessage(id, createMessage('assistant', reply));
+      reply = await getFakeReply(text);
     } catch {
-      addMessage(id, createMessage('assistant', 'Sorry, something went wrong. Please try again.'));
-    } finally {
-      setReplyingChatId(null);
+      reply = 'Sorry, something went wrong. Please try again.';
     }
+
+    if (requestId !== requestIdRef.current) return;
+    addMessage(chatId, createMessage('assistant', reply));
+    setReplyingChatId(null);
+  }
+
+  function handleStop() {
+    requestIdRef.current++;
+    setReplyingChatId(null);
+  }
+
+  /** Replaces the last assistant reply with a new one. */
+  function handleRegenerate() {
+    if (!activeChat || isReplying) return;
+    const messages = activeChat.messages;
+    const lastUser = [...messages].reverse().find((m) => m.sender === 'user');
+    if (!lastUser) return;
+
+    if (messages[messages.length - 1].sender === 'assistant') {
+      setChats((prev) =>
+        prev.map((chat) => (chat.id === activeChat.id ? { ...chat, messages: chat.messages.slice(0, -1) } : chat)),
+      );
+    }
+    requestReply(activeChat.id, lastUser.text);
   }
 
   function handleNewChat() {
@@ -147,9 +177,17 @@ export default function App() {
         <div className="chat-messages">
           {activeChat && activeChat.messages.length > 0 ? (
             <div className="message-list">
-              {activeChat.messages.map((message) => (
-                <MessageBubble key={message.id} message={message} />
-              ))}
+              {activeChat.messages.map((message, index) => {
+                const isLastReply =
+                  index === activeChat.messages.length - 1 && message.sender === 'assistant' && !isReplying;
+                return (
+                  <MessageBubble
+                    key={message.id}
+                    message={message}
+                    onRegenerate={isLastReply ? handleRegenerate : undefined}
+                  />
+                );
+              })}
               {replyingChatId === activeChat.id && <TypingIndicator />}
               <div ref={messagesEndRef} />
             </div>
@@ -158,7 +196,7 @@ export default function App() {
           )}
         </div>
 
-        <MessageInput onSend={handleSend} disabled={isReplying} />
+        <MessageInput onSend={handleSend} onStop={handleStop} disabled={isReplying} />
       </main>
     </div>
   );
