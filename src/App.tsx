@@ -143,6 +143,10 @@ export default function App() {
     if (id === activeChatId) setActiveChatId(null);
   }
 
+  function handleRenameChat(id: string, title: string) {
+    setChats((prev) => prev.map((chat) => (chat.id === id ? { ...chat, title } : chat)));
+  }
+
   return (
     <div className="app">
       <Sidebar
@@ -152,6 +156,7 @@ export default function App() {
         onNewChat={handleNewChat}
         onSelectChat={handleSelectChat}
         onDeleteChat={handleDeleteChat}
+        onRenameChat={handleRenameChat}
         onClose={() => setSidebarOpen(false)}
       />
 

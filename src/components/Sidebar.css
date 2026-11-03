@@ -165,10 +165,9 @@
   text-overflow: ellipsis;
 }
 
-.chat-item-delete {
+.chat-item-action {
   display: inline-flex;
   padding: 6px;
-  margin-right: 4px;
   border: none;
   border-radius: 6px;
   background: transparent;
@@ -177,13 +176,35 @@
   transition: opacity 0.15s, color 0.15s;
 }
 
-.chat-item:hover .chat-item-delete,
-.chat-item-delete:focus-visible {
+.chat-item:hover .chat-item-action,
+.chat-item-action:focus-visible {
   opacity: 1;
+}
+
+.chat-item-action:hover {
+  color: var(--text);
+}
+
+.chat-item-delete {
+  margin-right: 4px;
 }
 
 .chat-item-delete:hover {
   color: #d64545;
+}
+
+.chat-item-rename {
+  flex: 1;
+  min-width: 0;
+  margin: 3px 4px;
+  padding: 4px 8px;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  outline: none;
+  background: var(--bg);
+  font: inherit;
+  font-size: 14px;
+  color: var(--text);
 }
 
 .sidebar-footer {
@@ -235,7 +256,7 @@
   }
 
   /* No hover on touch screens, so always show the delete button. */
-  .chat-item-delete {
+  .chat-item-action {
     opacity: 1;
   }
 }
