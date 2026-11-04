@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import type { Chat } from '../types';
 import { ChatIcon, CloseIcon, EditIcon, PlusIcon, SearchIcon, SparkIcon, TrashIcon } from './Icons';
+import { groupChatsByDate } from '../utils/dateGroups';
 import './Sidebar.css';
 
 // "Props" are the inputs a component receives from its parent (App).
@@ -55,6 +56,7 @@ export default function Sidebar({
           chat.messages.some((m) => m.text.toLowerCase().includes(search)),
       )
     : chats;
+  const groups = search ? [{ label: 'Results', chats: visibleChats }] : groupChatsByDate(visibleChats);
 
   return (
     <>
@@ -98,53 +100,55 @@ export default function Sidebar({
           ) : visibleChats.length === 0 ? (
             <p className="chat-list-empty">No chats found.</p>
           ) : (
-            <>
-              <p className="chat-list-label">{search ? 'Results' : 'Recent'}</p>
-              <ul>
-                {visibleChats.map((chat) => (
-                  <li key={chat.id}>
-                    <div className={`chat-item ${chat.id === activeChatId ? 'active' : ''}`}>
-                      {editingId === chat.id ? (
-                        <input
-                          className="chat-item-rename"
-                          value={draftTitle}
-                          autoFocus
-                          aria-label="Chat name"
-                          onChange={(e) => setDraftTitle(e.target.value)}
-                          onKeyDown={handleRenameKeyDown}
-                          onBlur={finishRename}
-                        />
-                      ) : (
-                        <>
-                          <button
-                            className="chat-item-select"
-                            onClick={() => onSelectChat(chat.id)}
-                            onDoubleClick={() => startRename(chat)}
-                          >
-                            <ChatIcon size={15} />
-                            <span className="chat-item-title">{chat.title}</span>
-                          </button>
-                          <button
-                            className="chat-item-action"
-                            onClick={() => startRename(chat)}
-                            aria-label={`Rename chat "${chat.title}"`}
-                          >
-                            <EditIcon size={14} />
-                          </button>
-                          <button
-                            className="chat-item-action chat-item-delete"
-                            onClick={() => onDeleteChat(chat.id)}
-                            aria-label={`Delete chat "${chat.title}"`}
-                          >
-                            <TrashIcon size={14} />
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </>
+            groups.map((group) => (
+              <div className="chat-group" key={group.label}>
+                <p className="chat-list-label">{group.label}</p>
+                <ul>
+                  {group.chats.map((chat) => (
+                    <li key={chat.id}>
+                      <div className={`chat-item ${chat.id === activeChatId ? 'active' : ''}`}>
+                        {editingId === chat.id ? (
+                          <input
+                            className="chat-item-rename"
+                            value={draftTitle}
+                            autoFocus
+                            aria-label="Chat name"
+                            onChange={(e) => setDraftTitle(e.target.value)}
+                            onKeyDown={handleRenameKeyDown}
+                            onBlur={finishRename}
+                          />
+                        ) : (
+                          <>
+                            <button
+                              className="chat-item-select"
+                              onClick={() => onSelectChat(chat.id)}
+                              onDoubleClick={() => startRename(chat)}
+                            >
+                              <ChatIcon size={15} />
+                              <span className="chat-item-title">{chat.title}</span>
+                            </button>
+                            <button
+                              className="chat-item-action"
+                              onClick={() => startRename(chat)}
+                              aria-label={`Rename chat "${chat.title}"`}
+                            >
+                              <EditIcon size={14} />
+                            </button>
+                            <button
+                              className="chat-item-action chat-item-delete"
+                              onClick={() => onDeleteChat(chat.id)}
+                              aria-label={`Delete chat "${chat.title}"`}
+                            >
+                              <TrashIcon size={14} />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
           )}
         </nav>
 

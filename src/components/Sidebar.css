@@ -109,6 +109,10 @@
   padding: 0;
 }
 
+.chat-group + .chat-group {
+  margin-top: 16px;
+}
+
 .chat-list-label {
   margin: 0 0 6px;
   padding: 0 8px;
