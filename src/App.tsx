@@ -4,10 +4,11 @@ import Sidebar from './components/Sidebar';
 import WelcomeScreen from './components/WelcomeScreen';
 import MessageBubble, { TypingIndicator } from './components/MessageBubble';
 import MessageInput from './components/MessageInput';
-import { MenuIcon, MoonIcon, PlusIcon, SunIcon } from './components/Icons';
+import { DownloadIcon, MenuIcon, MoonIcon, PlusIcon, SunIcon } from './components/Icons';
 import { createId } from './utils/id';
 import { loadChats, saveChats } from './utils/storage';
 import { getFakeReply } from './utils/fakeAI';
+import { downloadChat } from './utils/exportChat';
 import { applyTheme, loadTheme, saveTheme } from './utils/theme';
 import type { Theme } from './utils/theme';
 import './App.css';
@@ -166,6 +167,16 @@ export default function App() {
             <MenuIcon />
           </button>
           <h2 className="chat-title">{activeChat?.title ?? 'New chat'}</h2>
+          {activeChat && activeChat.messages.length > 0 && (
+            <button
+              className="icon-button"
+              onClick={() => downloadChat(activeChat)}
+              aria-label="Export chat"
+              title="Export chat (.md)"
+            >
+              <DownloadIcon />
+            </button>
+          )}
           <button
             className="icon-button"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}

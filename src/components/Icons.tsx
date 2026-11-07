@@ -115,3 +115,9 @@ export const EditIcon = (p: IconProps) => (
     <path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4" />
   </Svg>
 );
+
+export const DownloadIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M12 4v11M7 10l5 5 5-5M5 20h14" />
+  </Svg>
+);
