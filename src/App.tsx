@@ -144,6 +144,12 @@ export default function App() {
     if (id === activeChatId) setActiveChatId(null);
   }
 
+  function handleClearAll() {
+    if (replyingChatId) handleStop();
+    setChats([]);
+    setActiveChatId(null);
+  }
+
   function handleRenameChat(id: string, title: string) {
     setChats((prev) => prev.map((chat) => (chat.id === id ? { ...chat, title } : chat)));
   }
@@ -158,6 +164,7 @@ export default function App() {
         onSelectChat={handleSelectChat}
         onDeleteChat={handleDeleteChat}
         onRenameChat={handleRenameChat}
+        onClearAll={handleClearAll}
         onClose={() => setSidebarOpen(false)}
       />
 

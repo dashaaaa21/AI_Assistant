@@ -14,6 +14,7 @@ interface SidebarProps {
   onSelectChat: (id: string) => void;
   onDeleteChat: (id: string) => void;
   onRenameChat: (id: string, title: string) => void;
+  onClearAll: () => void;
   onClose: () => void;
 }
 
@@ -25,12 +26,17 @@ export default function Sidebar({
   onSelectChat,
   onDeleteChat,
   onRenameChat,
+  onClearAll,
   onClose,
 }: SidebarProps) {
   const [query, setQuery] = useState('');
   // The chat whose title is being edited, and the text typed so far.
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draftTitle, setDraftTitle] = useState('');
+
+  function handleClearAll() {
+    if (window.confirm('Delete all chats? This cannot be undone.')) onClearAll();
+  }
 
   function startRename(chat: Chat) {
     setEditingId(chat.id);
@@ -152,7 +158,15 @@ export default function Sidebar({
           )}
         </nav>
 
-        <div className="sidebar-footer">Demo mode · simulated replies</div>
+        <div className="sidebar-footer">
+          {chats.length > 0 && (
+            <button className="clear-all-button" onClick={handleClearAll}>
+              <TrashIcon size={16} />
+              Clear all chats
+            </button>
+          )}
+          <span>Demo mode · simulated replies</span>
+        </div>
       </aside>
     </>
   );
