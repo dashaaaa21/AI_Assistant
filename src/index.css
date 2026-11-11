@@ -1,0 +1,88 @@
+/* Global styles: colors, fonts and basic resets used by the whole app. */
+
+/* Design tokens – change a color here and it updates everywhere. */
+:root {
+  --bg: #ffffff;
+  --bg-subtle: #f7f7f9;
+  --sidebar-bg: #fafafb;
+  --border: #ececf0;
+  --border-strong: #dcdce3;
+
+  --text: #1d1d22;
+  --text-muted: #6e6e7a;
+  --text-faint: #a0a0ab;
+
+  --accent: #5b5bd6;
+  --accent-hover: #4a4ac4;
+  --accent-soft: #f0f0fc;
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+
+  --shadow-sm: 0 1px 2px rgba(20, 20, 40, 0.04);
+  --shadow: 0 4px 16px rgba(20, 20, 40, 0.06);
+
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  color-scheme: light;
+}
+
+/* Make sizes include padding and borders (much easier layouts). */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* A visible outline when navigating with the keyboard. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Reusable square icon button. */
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  transition: background 0.15s, color 0.15s;
+}
+
+.icon-button:hover {
+  background: var(--bg-subtle);
+  color: var(--text);
+}

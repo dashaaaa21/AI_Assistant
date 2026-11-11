@@ -1,0 +1,95 @@
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  text-align: center;
+  animation: fade-in 0.4s ease;
+}
+
+.welcome-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 20px;
+  border-radius: 16px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.welcome-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.welcome-subtitle {
+  margin: 8px 0 32px;
+  color: var(--text-muted);
+}
+
+.prompt-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+.prompt-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  text-align: left;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.prompt-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.prompt-card-title {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.prompt-card-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* One column of cards on small phones. */
+@media (max-width: 560px) {
+  .welcome-title {
+    font-size: 23px;
+  }
+
+  .prompt-grid {
+    grid-template-columns: 1fr;
+  }
+}
